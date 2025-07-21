@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Girl Tech Talk: Why Your Apps Need Eyes</title>
+    <!-- Chosen Palette: Tech Twilight -->
+    <!-- Application Structure Plan: The SPA is structured thematically to guide the user from foundational concepts to real-world applications and business value. The flow is: Header -> 1. 'What & Why' (Introduction to observability and the speakers) -> 2. 'The Three Pillars' (Interactive deep-dive into metrics, logs, traces) -> 3. 'Real-World Stories' (Tabbed view of speaker perspectives) -> 4. 'The Business Impact' (Data dashboard with charts) -> 5. 'Our Solution' (Product features) -> Footer. This non-linear, thematic structure was chosen over the original linear slide format to empower users to explore content based on their interests, enhancing engagement and comprehension. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Key business metrics (time savings, cost reduction). Goal: Compare & Inform. Viz/Method: Bar and Donut charts (Chart.js). Interaction: Animated on load, tooltips on hover. Justification: Charts provide a quick, powerful visualization of quantitative benefits.
+        - Report Info: Three Pillars of Observability. Goal: Organize & Inform. Viz/Method: Interactive HTML/CSS tabs. Interaction: Clicking tabs reveals detailed content. Justification: Tabs organize complex information into digestible, user-controlled chunks without cluttering the UI.
+        - Report Info: Speaker Stories (Before/After). Goal: Compare & Organize. Viz/Method: Interactive HTML/CSS tabs with "Before" and "After" panels. Interaction: Clicking a speaker's name reveals their story. Justification: This personalizes the content and makes the impact of observability tangible through narrative.
+        - Report Info: Monitoring vs. Observability. Goal: Compare. Viz/Method: Side-by-Side HTML/CSS layout. Interaction: Static visual comparison. Justification: A direct visual comparison is the clearest way to explain the distinction between the two concepts.
+        - All diagrams and icons are created with HTML/CSS and Unicode characters to avoid SVG/Mermaid.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7FF;
+            color: #2D3748;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #ED64A6;
+            border-bottom-color: #ED64A6;
+        }
+        .tab.active {
+            background-color: #ED64A6;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .story-tab.active {
+            border-color: #ED64A6;
+            transform: scale(1.05);
+        }
+        .story-content {
+            display: none;
+        }
+        .story-content.active {
+            display: block;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Why Your Apps Need Eyes</h1>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#intro" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">The What & Why</a>
+                    <a href="#pillars" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">The Three Pillars</a>
+                    <a href="#stories" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Real-World Stories</a>
+                    <a href="#impact" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Business Impact</a>
+                    <a href="#solution" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Our Solution</a>
+                </nav>
+                 <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-2.5">
+                        <option value="#intro">The What & Why</option>
+                        <option value="#pillars">The Three Pillars</option>
+                        <option value="#stories">Real-World Stories</option>
+                        <option value="#impact">Business Impact</option>
+                        <option value="#solution">Our Solution</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 md:py-16">
+
+        <!-- Section 1: Introduction -->
+        <section id="intro" class="mb-24 text-center scroll-mt-24">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">It's Time to Give Your Apps <span class="text-pink-600">Superpowers</span></h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-12">
+                In today's complex digital world, simply hoping your applications work is not a strategy. True insight comes from Observability—the ability to see, understand, and ask any question about what's happening inside your systems. This is the story of how seeing clearly transforms everything, told by the experts who live it every day.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 text-center">
+                <div class="space-y-3 p-4 bg-white rounded-xl shadow-lg transform hover:scale-105 transition-transform">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-teal-100 to-blue-200 flex items-center justify-center text-4xl">👩‍🏫</div>
+                    <h3 class="font-bold">Najwa</h3>
+                    <p class="text-sm text-gray-500">The IT Professor</p>
+                </div>
+                <div class="space-y-3 p-4 bg-white rounded-xl shadow-lg transform hover:scale-105 transition-transform">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-pink-100 to-purple-200 flex items-center justify-center text-4xl">👩‍💻</div>
+                    <h3 class="font-bold">Mariam</h3>
+                    <p class="text-sm text-gray-500">The Full-Stack Developer</p>
+                </div>
+                <div class="space-y-3 p-4 bg-white rounded-xl shadow-lg transform hover:scale-105 transition-transform">
+                     <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center text-4xl">☁️</div>
+                    <h3 class="font-bold">Amina</h3>
+                    <p class="text-sm text-gray-500">The Cloud Team Lead</p>
+                </div>
+                <div class="space-y-3 p-4 bg-white rounded-xl shadow-lg transform hover:scale-105 transition-transform">
+                     <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-green-100 to-teal-200 flex items-center justify-center text-4xl">🎨</div>
+                    <h3 class="font-bold">Hind</h3>
+                    <p class="text-sm text-gray-500">The Network Engineer</p>
+                </div>
+                <div class="space-y-3 p-4 bg-white rounded-xl shadow-lg transform hover:scale-105 transition-transform">
+                     <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-purple-100 to-pink-200 flex items-center justify-center text-4xl">📈</div>
+                    <h3 class="font-bold">Hajar</h3>
+                    <p class="text-sm text-gray-500">The APM Expert</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Three Pillars -->
+        <section id="pillars" class="mb-24 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">The Three Pillars of Observability</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    Observability isn't just one thing; it's a powerful combination of three types of data that, when brought together, tell you the complete story of your system. Najwa breaks down these 'three best friends' that form the foundation of true system understanding.
+                </p>
+            </div>
+            <div class="max-w-4xl mx-auto">
+                <div id="pillars-tabs" class="flex justify-center border-b border-gray-200 mb-8">
+                    <button class="tab active py-3 px-6 text-lg font-semibold" data-tab="metrics">📊 Metrics</button>
+                    <button class="tab py-3 px-6 text-lg font-semibold text-gray-500" data-tab="logs">📝 Logs</button>
+                    <button class="tab py-3 px-6 text-lg font-semibold text-gray-500" data-tab="traces">🗺️ Traces</button>
+                </div>
+                <div id="pillars-content" class="bg-white p-8 rounded-xl shadow-lg">
+                    <div id="metrics-content" class="tab-content active fade-in">
+                        <h3 class="text-2xl font-bold mb-3">Metrics: Your App's Vital Signs</h3>
+                        <p class="text-gray-600">Metrics are the quantifiable data points that tell you about the health and performance of your system at a high level. Think of them as your app's temperature, blood pressure, and heart rate. They are perfect for dashboards and alerts, telling you if something is wrong, even if they don't always tell you *why*.
+                        <br><br><strong>Examples:</strong> CPU Usage, Memory Consumption, Response Time, Error Rates.
+                        </p>
+                    </div>
+                    <div id="logs-content" class="tab-content fade-in">
+                        <h3 class="text-2xl font-bold mb-3">Logs: Your App's Diary</h3>
+                        <p class="text-gray-600">Logs are detailed, timestamped records of discrete events that happen over time. If metrics are the vital signs, logs are the diary entries explaining what happened and when. They provide the rich, granular context needed to debug specific issues. A log might say, "9 AM - started processing order, 9:01 AM - connected to database, 9:02 AM - ERROR: database timeout." They are invaluable for understanding the sequence of events leading to a problem, offering granular details that metrics alone cannot provide.
+                        <br><br><strong>Examples:</strong> Application errors, user activity records, system startup messages, database queries, security events.
+                        </p>
+                    </div>
+                    <div id="traces-content" class="tab-content fade-in">
+                        <h3 class="text-2xl font-bold mb-3">Traces: Following the Journey</h3>
+                        <p class="text-gray-600">Traces show the end-to-end journey of a single request as it travels through multiple services in your application. They are the breadcrumbs that connect the dots between different components, making them essential for understanding performance bottlenecks and failures in complex, distributed systems. Imagine following a letter through the postal system, seeing every stop it makes and how long it spends at each. Traces provide a holistic view of a transaction, revealing latency and errors across microservices.
+                        <br><br><strong>Example:</strong> A single user clicking 'buy now' might generate a trace that follows the request from the web server, to the API gateway, to the inventory service, and finally to the payment processor, pinpointing exactly where delays or errors occurred in that entire flow, even across different teams or cloud environments.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Real-World Stories -->
+        <section id="stories" class="mb-24 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Observability in the Real World</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    Theory is one thing, but the true power of observability comes to life in the hands of those on the front lines. Hear directly from Mariam, Amina, and Hind about how seeing clearly has transformed their work, their stress levels, and their ability to innovate.
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div id="stories-tabs" class="flex md:flex-col md:w-1/4 space-x-2 md:space-x-0 md:space-y-4 overflow-x-auto pb-2">
+                    <button class="story-tab active w-full text-left p-4 rounded-lg border-2 border-transparent transition-all duration-300 bg-white shadow-sm" data-story="mariam">
+                        <h4 class="font-bold text-lg">👩‍💻 The Developer's View</h4>
+                        <p class="text-sm text-gray-500">Mariam's Story</p>
+                    </button>
+                    <button class="story-tab w-full text-left p-4 rounded-lg border-2 border-transparent transition-all duration-300 bg-white shadow-sm" data-story="amina">
+                        <h4 class="font-bold text-lg">☁️ The Cloud Perspective</h4>
+                        <p class="text-sm text-gray-500">Amina's Story</p>
+                    </button>
+                    <button class="story-tab w-full text-left p-4 rounded-lg border-2 border-transparent transition-all duration-300 bg-white shadow-sm" data-story="hind">
+                        <h4 class="font-bold text-lg">🎨 The Network Story</h4>
+                        <p class="text-sm text-gray-500">Hind's Story</p>
+                    </button>
+                </div>
+                <div id="stories-content" class="md:w-3/4 bg-white p-8 rounded-xl shadow-lg">
+                    <div id="mariam-story" class="story-content active fade-in">
+                        <h3 class="text-2xl font-bold mb-4">From Weekend Bug Hunts to 15-Minute Fixes</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-red-600 mb-2">BEFORE: The Nightmare</h4>
+                                <p class="text-gray-600">"A user complains. Something's broken. I'd spend my weekend playing detective with no clues, guessing where the problem might be. It was stressful, slow, and I felt like I was always one step behind."</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-teal-600 mb-2">AFTER: The Superpower</h4>
+                                <p class="text-gray-600">"Now, I trace the exact path of the problem. I can see the slow function, the failing service, even the specific line of code. What took 6 hours now takes 15 minutes. My weekends are mine again!"</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="amina-story" class="story-content fade-in">
+                        <h3 class="text-2xl font-bold mb-4">From 3-Hour Outages to Proactive Prevention</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-red-600 mb-2">BEFORE: The Chaos</h4>
+                                <p class="text-gray-600">"Our e-commerce platform went down during a flash sale. We got a generic 'service unhealthy' alert and spent 3 hours finding a single database leak. We lost revenue and customer trust."</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-teal-600 mb-2">AFTER: The Clarity</h4>
+                                <p class="text-gray-600">"Last month, our tools warned us about a capacity limit *before* users were affected. We scaled automatically. Zero downtime. We're not just reacting to fires; we're preventing them."</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="hind-story" class="story-content fade-in">
+                         <h3 class="text-2xl font-bold mb-4">From a Black Box to Beautiful Art</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-red-600 mb-2">BEFORE: The Mystery</h4>
+                                <p class="text-gray-600">"When someone said 'the internet is slow,' we had no real answer. Troubleshooting a network without visibility is like trying to fix an engine in complete darkness. It felt like guesswork."</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-teal-600 mb-2">AFTER: The Masterpiece</h4>
+                                <p class="text-gray-600">"Now, I see network data as a gorgeous, visual story. I can see traffic congestion on one route and automatically redirect it to a clearer one. It turns complex data into beautiful, actionable art."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Business Impact -->
+        <section id="impact" class="mb-24 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">The Undeniable Business Impact</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    Observability isn't just a technical practice; it's a core business strategy. As Hajar explains, the ability to see clearly has a direct and dramatic impact on efficiency, innovation, and the bottom line. The numbers speak for themselves.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-center">Developer Time Allocation Shift</h3>
+                    <div class="chart-container">
+                        <canvas id="timeAllocationChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-center">Incident Resolution Improvement</h3>
+                     <div class="chart-container">
+                        <canvas id="mttrChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg md:col-span-2 lg:col-span-2">
+                    <h3 class="font-bold text-xl mb-4 text-center">Quantifiable Financial Gains</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
+                        <div>
+                            <p class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500" data-counter="5600">$0</p>
+                            <p class="text-gray-600">Average cost of downtime per minute.</p>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500" data-counter="200000">$0</p>
+                            <p class="text-gray-600">Annual savings from one client's cloud optimization.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Solution -->
+        <section id="solution" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">The Solution: Automatic & Intelligent</h2>
+                 <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    Understanding the 'why' is crucial, but having the right 'how' makes all the difference. Hajar introduces a solution that embodies the principles of modern observability, making it accessible, powerful, and business-focused.
+                </p>
+            </div>
+            <div class="max-w-5xl mx-auto bg-gradient-to-br from-purple-600 to-pink-600 p-8 rounded-2xl shadow-2xl">
+                <div class="text-center mb-8">
+                    <h3 class="text-white text-3xl font-bold">Dynatrace: The All-in-One Platform</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-white">
+                    <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm">
+                        <h4 class="font-bold text-xl mb-2">🤖 Automatic Discovery</h4>
+                        <p class="text-sm">Install one tiny agent, and it automatically discovers and maps your entire application and infrastructure environment. No manual configuration, no guesswork, just instant visibility.</p>
+                    </div>
+                     <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm">
+                        <h4 class="font-bold text-xl mb-2">🧠 AI-Powered Answers</h4>
+                        <p class="text-sm">The Davis® AI engine doesn't just find problems—it pinpoints the precise root cause of problems across your full stack, saving countless hours of manual troubleshooting and analysis.</p>
+                    </div>
+                     <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm">
+                        <h4 class="font-bold text-xl mb-2">💰 Business Context</h4>
+                        <p class="text-sm">Connect technical performance directly to business outcomes. See how a slow service or error is impacting user experience, conversion rates, and ultimately, your revenue in real-time.</p>
+                    </div>
+                    <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm">
+                        <h4 class="font-bold text-xl mb-2">🌐 Unified Observability</h4>
+                        <p class="text-sm">Whether your applications run on AWS, Azure, Google Cloud, Kubernetes, or hybrid environments, Dynatrace provides a single, unified view of your entire stack, breaking down silos between teams.</p>
+                    </div>
+                    <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm">
+                        <h4 class="font-bold text-xl mb-2">🛡️ Security & AIOps</h4>
+                        <p class="text-sm">Beyond performance, Dynatrace offers advanced application security capabilities and leverages AIOps to automate operations, predict issues, and optimize resource utilization across your digital ecosystem.</p>
+                    </div>
+                    <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm">
+                        <h4 class="font-bold text-xl mb-2">✨ Simplicity & Scale</h4>
+                        <p class="text-sm">It transforms complex data into clear, actionable insights through intuitive dashboards and intelligent alerts, making decision-making easy and scaling effortlessly from small teams to enterprise-level operations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-24">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <h3 class="text-2xl font-bold mb-2">Ready to Level Up Your Tech Game?</h3>
+            <p class="mb-4">Subscribe to Girl Tech Talk for more simple, actionable insights into complex topics.</p>
+            <a href="#" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-full transition-colors">
+                Subscribe Now
+            </a>
+            <div class="mt-8 border-t border-gray-700 pt-6 text-sm text-gray-400">
+                <p>&copy; 2025 Girl Tech Talk. An Interactive Experience.</p>
+                 <p class="mt-1">In partnership with Dynatrace.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DATA ---
+            const timeAllocationData = {
+                labels: ['Before Observability', 'With Observability'],
+                datasets: [{
+                    label: 'Troubleshooting Time',
+                    data: [100, 40],
+                    backgroundColor: 'rgba(237, 100, 166, 0.6)',
+                    borderColor: 'rgba(237, 100, 166, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Feature Building Time',
+                    data: [100, 140],
+                    backgroundColor: 'rgba(79, 209, 197, 0.6)',
+                    borderColor: 'rgba(79, 209, 197, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            const mttrData = {
+                labels: ['Mean Time To Resolution'],
+                datasets: [{
+                    label: 'Before',
+                    data: [100],
+                    backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1,
+                }, {
+                    label: 'After (75% Reduction)',
+                    data: [25],
+                    backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 1,
+                }]
+            };
+            
+            // --- INITIALIZATION ---
+            setupNavigation();
+            setupTabs('pillars-tabs', 'pillars-content', 'tab', 'tab-content');
+            setupTabs('stories-tabs', 'stories-content', 'story-tab', 'story-content');
+            createCharts();
+            setupCounters();
+            setupMobileNav();
+
+            // --- FUNCTIONS ---
+            function setupNavigation() {
+                const navLinks = document.querySelectorAll('.nav-link');
+                const sections = document.querySelectorAll('main section');
+
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.3
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const id = entry.target.getAttribute('id');
+                            navLinks.forEach(link => {
+                                link.classList.remove('active');
+                                if (link.getAttribute('href') === `#${id}`) {
+                                    link.classList.add('active');
+                                }
+                            });
+                        }
+                    });
+                }, observerOptions);
+
+                sections.forEach(section => {
+                    observer.observe(section);
+                });
+            }
+
+            function setupMobileNav() {
+                const mobileNav = document.getElementById('mobile-nav');
+                mobileNav.addEventListener('change', (e) => {
+                    window.location.hash = e.target.value;
+                });
+            }
+            
+            function setupTabs(tabContainerId, contentContainerId, tabClass, contentClass) {
+                const tabContainer = document.getElementById(tabContainerId);
+                const contentContainer = document.getElementById(contentContainerId);
+                
+                if (!tabContainer || !contentContainer) return;
+
+                const tabs = tabContainer.querySelectorAll(`.${tabClass}`);
+                const contents = contentContainer.querySelectorAll(`.${contentClass}`);
+                
+                tabContainer.addEventListener('click', (e) => {
+                    const targetTab = e.target.closest(`.${tabClass}`);
+                    if (!targetTab) return;
+
+                    const tabId = targetTab.dataset.tab || targetTab.dataset.story;
+
+                    tabs.forEach(tab => tab.classList.remove('active'));
+                    targetTab.classList.add('active');
+
+                    contents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-content` || content.id === `${tabId}-story`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            }
+
+            function createCharts() {
+                const timeCtx = document.getElementById('timeAllocationChart')?.getContext('2d');
+                if (timeCtx) {
+                    new Chart(timeCtx, {
+                        type: 'bar',
+                        data: timeAllocationData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true, ticks: { callback: (value) => value + '%' } }
+                            },
+                            plugins: { legend: { position: 'bottom' } }
+                        }
+                    });
+                }
+
+                const mttrCtx = document.getElementById('mttrChart')?.getContext('2d');
+                if (mttrCtx) {
+                    new Chart(mttrCtx, {
+                        type: 'bar',
+                        data: mttrData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            indexAxis: 'y',
+                            scales: {
+                                x: { beginAtZero: true, ticks: { callback: (value) => value + '%' } }
+                            },
+                            plugins: { legend: { position: 'bottom' } }
+                        }
+                    });
+                }
+            }
+
+            function setupCounters() {
+                const counters = document.querySelectorAll('[data-counter]');
+                const observerOptions = {
+                    root: null,
+                    threshold: 0.5
+                };
+
+                const observer = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const counter = entry.target;
+                            const target = +counter.dataset.counter;
+                            animateCounter(counter, target);
+                            observer.unobserve(counter);
+                        }
+                    });
+                }, observerOptions);
+
+                counters.forEach(counter => {
+                    observer.observe(counter);
+                });
+            }
+
+            function animateCounter(element, target) {
+                let start = 0;
+                const duration = 2000;
+                const stepTime = Math.abs(Math.floor(duration / target));
+
+                const timer = setInterval(() => {
+                    start += Math.ceil(target / (duration / 16));
+                    if (start >= target) {
+                        clearInterval(timer);
+                        start = target;
+                    }
+                    element.innerText = '$' + start.toLocaleString();
+                }, 16);
+            }
+        });
+    </script>
+</body>
+</html>
